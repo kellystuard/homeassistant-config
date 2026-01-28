@@ -1,0 +1,73 @@
+# -----------------------------
+# Home Assistant Core
+# -----------------------------
+home-assistant.log
+home-assistant.log.*
+home-assistant_v2.db
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
+
+# Log files
+*.log
+*.log.*
+
+# Backups
+.backups/
+backup/
+*.tar
+*.tar.gz
+
+# Secrets
+secrets.yaml
+.storage/
+
+# SSL keys
+ssl/
+*.pem
+*.crt
+*.key
+
+# -----------------------------
+# Add-ons & Ingress
+# -----------------------------
+addons/
+share/
+media/
+tts/
+
+# Studio Code Server cache
+.vscode/
+.vscode-server/
+.vscode-server-insiders/
+
+# -----------------------------
+# ESPHome
+# -----------------------------
+esphome/.esphome/
+esphome/build/
+esphome/.pioenvs/
+esphome/.piolibdeps/
+esphome/*/*.bin
+esphome/*/*.yaml.bak
+
+# -----------------------------
+# Lovelace / UI
+# -----------------------------
+www/community/*/.cache/
+www/community/*/node_modules/
+
+# -----------------------------
+# Python / Misc
+# -----------------------------
+__pycache__/
+*.pyc
+*.pyo
+
+# -----------------------------
+# System / OS Noise
+# -----------------------------
+*.swp
+*.swo
+*.tmp
+.DS_Store
+Thumbs.db

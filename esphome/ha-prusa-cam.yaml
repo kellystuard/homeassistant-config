@@ -1,0 +1,87 @@
+esphome:
+  name: ha-prusa-cam
+  friendly_name: "ESP32‑CAM for PrusaConnect"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    password: "8d1315b946c5951834947c7bf436c46f"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "ha-prusa-cam Fallback Hotspot"
+    password: !secret wifi_password
+
+captive_portal:
+
+# ESP32‑CAM requires the ESP32‑CAM's extra 4 MB of pseudo‑static RAM (PSRAM) chip soldered on the board.
+# The camera driver won’t compile or run unless ESPHome knows to use it.
+psram:
+
+i2c:
+  id: cam_i2c
+  sda: GPIO26
+  scl: GPIO27
+
+esp32_camera:
+  name: ESP32 Camera
+  external_clock:
+    pin:
+      number: GPIO0
+      ignore_strapping_warning: true
+    frequency: 10MHz
+  i2c_id: cam_i2c
+  data_pins:
+    - number: GPIO5
+      ignore_strapping_warning: true
+    - GPIO18
+    - GPIO19
+    - GPIO21
+    - GPIO36
+    - GPIO39
+    - GPIO34
+    - GPIO35
+  vsync_pin: GPIO25
+  href_pin: GPIO23
+  pixel_clock_pin: GPIO22
+  resolution: SVGA
+  jpeg_quality: 10
+  max_framerate: 10 fps
+  # Specific to the Aideepen ESP32-CAM
+  power_down_pin: GPIO32
+  vertical_flip: false
+  horizontal_mirror: false
+
+# Built-in flash LED (GPIO4)
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: cam_flash
+  - platform: gpio
+    pin: GPIO33
+    id: cam_red_led
+    inverted: true
+
+light:
+  - platform: binary
+    name: "ESP32-CAM Flash"
+    output: cam_flash
+  - platform: binary
+    name: "ESP32-CAM Red LED"
+    output: cam_red_led
