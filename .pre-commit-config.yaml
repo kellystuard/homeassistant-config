@@ -1,0 +1,42 @@
+ci:
+  autofix_prs: true
+  autofix_commit_msg: "pre-commit.ci: auto fixes"
+  skip: []
+  submodules: false
+
+repos:
+  # --- Core pre-commit hooks ---
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+        args: ["--allow-multiple-documents"]
+      - id: check-json
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: detect-private-key
+
+  # --- YAML formatter (auto-fix capable) ---
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.12.1
+    hooks:
+      - id: yamlfmt
+        args: ["-conf=.yamlfmt.yaml"]
+        files: "\\.(yaml|yml)$"
+
+  # --- Secret scanning ---
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+
+  # --- Optional: Prettier for JSON, Markdown, etc. ---
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        additional_dependencies:
+          - prettier
+        files: "\\.(json|md)$"

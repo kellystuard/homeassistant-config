@@ -1,0 +1,10 @@
+formatter:
+  type: basic
+
+line_ending: lf
+
+indent:
+  indent: 2
+  indentless_arrays: false
+
+retain_line_breaks: true
