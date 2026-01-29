@@ -24,28 +24,28 @@ async def initialize_integration(hass: HomeAssistant, config):
         if state is None:
             print("Invalid camera entity ID.")
             return
-        
+
         if api_token is None or camera_id is None:
             print("API config values are not set.")
             return
 
         image_url = f"{instance_url}{state.attributes['entity_picture']}"
-        
+
         try:
             async with session.get(image_url) as response:
                 if response.status != 200:
                     print(f"Failed to fetch image from camera: {response.status}")
                     return
-                
+
                 image_data = await response.read()
-                
+
                 headers = {
                     "token": api_token,
                     "fingerprint": camera_id,
                     "Content-Type": "image/jpg",
                     "Content-Length": str(len(image_data))
                 }
-                
+
                 async with session.put(PRUSA_CONNECT_API_URL, headers=headers, data=image_data) as upload_response:
                     if upload_response.status == 200:
                         response_text = await upload_response.text()

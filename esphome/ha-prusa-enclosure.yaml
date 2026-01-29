@@ -2,15 +2,12 @@ esphome:
   name: ha-prusa-enclosure
   friendly_name: ESP32-DISPLAY for Printer Enclosure
   name_add_mac_suffix: false
-
 esp32:
   board: esp32dev
   framework:
     type: esp-idf
-
 logger:
   level: DEBUG
-
 # Enable Home Assistant API
 api:
   encryption:
@@ -20,30 +17,25 @@ api:
       - lvgl.label.update:
           id: hastatus_lbl
           text: "\U000F05A9" # wifi
-      # - lambda: |-
-      #     // Publish the HA-backed sensor state into the LVGL text_sensor
-      #     id(printer_status_lvgl).publish_state(id(printer_on).state);
+          # - lambda: |-
+          #     // Publish the HA-backed sensor state into the LVGL text_sensor
+          #     id(printer_status_lvgl).publish_state(id(printer_on).state);
   on_client_disconnected:
     then:
       - lvgl.label.update:
           id: hastatus_lbl
           text: "\U000F05AA" # wifi-off
-
 ota:
   platform: esphome
   password: "8d1315b946c5951834947c7bf436c46f"
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "ha-prusa-enclos Fallback Hotspot"
     password: !secret wifi_password
-
 captive_portal:
-
 font:
   - file: "gfonts://Roboto"
     id: roboto
@@ -63,7 +55,6 @@ font:
           - "\U000F18F2" # refresh-auto
           - "\U000F05A9" # wifi
           - "\U000F05AA" # wifi-off
-
 # SPI bus for display
 spi:
   - id: hspi # USE_HSPI_PORT
@@ -76,7 +67,6 @@ spi:
     clk_pin: GPIO25
     mosi_pin: GPIO32
     miso_pin: GPIO39
-
 display:
   - platform: mipi_spi
     id: spi_display
@@ -94,7 +84,6 @@ display:
     enable_pin: GPIO21
     auto_clear_enabled: false
     update_interval: never
-
 # output:
 #   - platform: ledc
 #     id: backlight_output
@@ -106,7 +95,6 @@ display:
 #     name: "TFT Backlight"
 #     output: backlight_output
 #     default_transition_length: 0s
-
 output:
   - platform: ledc
     pin: GPIO4
@@ -120,7 +108,6 @@ output:
     pin: GPIO17
     id: blue_led
     inverted: true
-
 light:
   - platform: rgb
     id: tri_led
@@ -128,7 +115,6 @@ light:
     red: red_led
     green: green_led
     blue: blue_led
-
 touchscreen:
   - platform: xpt2046
     id: spi_touchscreen
@@ -145,10 +131,8 @@ touchscreen:
       mirror_x: false
       mirror_y: false
       swap_xy: true
-
 lvgl:
   default_font: roboto
-
   pages:
     - layout: # vertical+
         type: flex
@@ -204,26 +188,26 @@ lvgl:
                   one_checked: true
                   rows:
                     - buttons:
-                      - id: off_button
-                        text: "\U000F0E4F Off" # lightbulb-off
-                        control:
-                          checkable: true
+                        - id: off_button
+                          text: "\U000F0E4F Off" # lightbulb-off
+                          control:
+                            checkable: true
                     - buttons:
-                      - id: auto_button
-                        text: "\U000F1800 Auto" # lightbulb-auto
-                        control:
-                          checkable: true
+                        - id: auto_button
+                          text: "\U000F1800 Auto" # lightbulb-auto
+                          control:
+                            checkable: true
                     - buttons:
-                      - id: on_button
-                        text: "\U000F06E8 On" # lightbulb-on
-                        control:
-                          checkable: true
+                        - id: on_button
+                          text: "\U000F06E8 On" # lightbulb-on
+                          control:
+                            checkable: true
                   on_press:
                     then:
                       - select.set_index:
                           id: light_state
                           index: !lambda 'return x;'
-                      # - script.execute: update_relay_logic
+                          # - script.execute: update_relay_logic
   on_boot:
     then:
       - logger.log: "LVGL on_boot triggered"
@@ -235,7 +219,6 @@ lvgl:
           format: "Boot: printer_status_lvgl state: %s"
           args: [id(printer_status_lvgl).state]
           level: DEBUG
-
 text_sensor:
   - platform: homeassistant
     id: printer_on
@@ -254,7 +237,6 @@ text_sensor:
           format: "printer_status_lvgl state changed to: %s"
           args: [x]
           level: DEBUG
-
 select:
   - platform: template
     id: light_state

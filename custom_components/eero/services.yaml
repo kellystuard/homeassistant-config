@@ -1,4 +1,3 @@
-
 set_blocked_apps:
   fields:
     blocked_apps:
@@ -9,4 +8,4 @@ set_blocked_apps:
       example: John Doe or 1234567
     target_network:
       required: False
-      example: My Network or 1234567    
+      example: My Network or 1234567

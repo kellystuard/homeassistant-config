@@ -1,57 +1,45 @@
 esphome:
   name: esp32-display-for-garage
   friendly_name: ESP32-DISPLAY for Garage
-
 esp32:
   board: esp32dev
   framework:
     type: arduino
-
 logger:
-
 # Enable Home Assistant API
 api:
   encryption:
     key: "+XTDR0hjA5sXsYZMXeykzu62VtQwI/9ZC0kVIBODNNY="
-
 ota:
   - platform: esphome
     password: "39ee2c692b4c58caf7f27a3b715d0f04"
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Esp32-Display-For-Garage"
     password: "cZYDgI7Ntsc9"
-
 captive_portal:
-
 globals:
   - id: counter
     type: int
     restore_value: no
     initial_value: '0'
-
 interval:
   - interval: 1s
     then:
       - lambda: |-
           id(counter) += 1;
-
 spi:
   clk_pin: GPIO18
   mosi_pin: GPIO23
   miso_pin: GPIO19
-
 # Local font file (must exist in /config/esphome/)
 font:
   - file: "arial.ttf"
     id: my_font
     size: 24
-
 display:
   - platform: ili9xxx
     model: TFT 2.4
@@ -62,19 +50,16 @@ display:
     invert_colors: true
     lambda: |-
       it.printf(20, 40, id(my_font), "Count: %d", id(counter));
-
 touchscreen:
   platform: xpt2046
   cs_pin: GPIO21
   interrupt_pin: GPIO22
   update_interval: 50ms
-
   calibration:
     x_min: 200
     x_max: 3800
     y_min: 200
     y_max: 3800
-
 binary_sensor:
   - platform: touchscreen
     name: "Touch Reset Button"

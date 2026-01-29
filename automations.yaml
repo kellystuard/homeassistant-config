@@ -2,63 +2,63 @@
   alias: Basement Prusa Enclosure Light Control
   description: ''
   triggers:
-  - trigger: state
-    entity_id:
-    - sensor.prusa_mk4
-  - trigger: state
-    entity_id:
-    - input_select.prusa_enclosure_light
+    - trigger: state
+      entity_id:
+        - sensor.prusa_mk4
+    - trigger: state
+      entity_id:
+        - input_select.prusa_enclosure_light
   conditions: []
   actions:
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: input_select.prusa_enclosure_light
-        state:
-        - 'Off'
-      sequence:
-      - action: switch.turn_off
-        metadata: {}
-        data: {}
-        target:
-          entity_id: switch.sonoff_100267bc56
-    - conditions:
-      - condition: state
-        entity_id: input_select.prusa_enclosure_light
-        state:
-        - 'On'
-      sequence:
-      - action: switch.turn_on
-        metadata: {}
-        target:
-          entity_id: switch.sonoff_100267bc56
-        data: {}
-    - conditions:
-      - condition: state
-        entity_id: input_select.prusa_enclosure_light
-        state:
-        - Auto
-      sequence:
-      - if:
-        - condition: state
-          entity_id: sensor.prusa_mk4
-          state:
-          - attention
-          - busy
-          - error
-          - paused
-          - printing
-        then:
-        - action: switch.turn_on
-          metadata: {}
-          target:
-            entity_id: switch.sonoff_100267bc56
-          data: {}
-        else:
-        - action: switch.turn_off
-          metadata: {}
-          target:
-            entity_id: switch.sonoff_100267bc56
-          data: {}
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_select.prusa_enclosure_light
+              state:
+                - 'Off'
+          sequence:
+            - action: switch.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: switch.sonoff_100267bc56
+        - conditions:
+            - condition: state
+              entity_id: input_select.prusa_enclosure_light
+              state:
+                - 'On'
+          sequence:
+            - action: switch.turn_on
+              metadata: {}
+              target:
+                entity_id: switch.sonoff_100267bc56
+              data: {}
+        - conditions:
+            - condition: state
+              entity_id: input_select.prusa_enclosure_light
+              state:
+                - Auto
+          sequence:
+            - if:
+                - condition: state
+                  entity_id: sensor.prusa_mk4
+                  state:
+                    - attention
+                    - busy
+                    - error
+                    - paused
+                    - printing
+              then:
+                - action: switch.turn_on
+                  metadata: {}
+                  target:
+                    entity_id: switch.sonoff_100267bc56
+                  data: {}
+              else:
+                - action: switch.turn_off
+                  metadata: {}
+                  target:
+                    entity_id: switch.sonoff_100267bc56
+                  data: {}
   mode: queued
   max: 10
