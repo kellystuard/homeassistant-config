@@ -10,7 +10,4 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 shell_command: !include shell_commands.yaml
-http:
-  use_x_forwarded_for: true
-  trusted_proxies:
-    - 172.30.33.0/24
+intent_script: !include intent_script.yaml

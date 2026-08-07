@@ -3,6 +3,7 @@ esphome:
   friendly_name: ESP32-DISPLAY for Printer Enclosure
   name_add_mac_suffix: false
 esp32:
+  # board: esp32-2432S028
   board: esp32dev
   framework:
     type: esp-idf

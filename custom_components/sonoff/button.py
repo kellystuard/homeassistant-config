@@ -1,5 +1,6 @@
-from homeassistant.components.button import ButtonEntity
+from homeassistant.components.button import ButtonDeviceClass, ButtonEntity
 from homeassistant.components.script import ATTR_LAST_TRIGGERED
+from homeassistant.const import EntityCategory
 from homeassistant.helpers.entity import DeviceInfo
 
 from .core.const import DOMAIN
@@ -30,7 +31,9 @@ class XRemoteButton(ButtonEntity):
         self._attr_name = child["name"]
         self._attr_unique_id = f"{bridge['deviceid']}_{self.channel}"
 
-        self.entity_id = DOMAIN + "." + self._attr_unique_id
+        # Use button domain to match the entity's platform.
+        # https://github.com/AlexxIT/SonoffLAN/issues/1787
+        self.entity_id = "button." + self._attr_unique_id
 
     def internal_update(self, ts: str):
         self._attr_extra_state_attributes = {ATTR_LAST_TRIGGERED: ts}
@@ -47,5 +50,20 @@ class XRemoteButton(ButtonEntity):
 class XButton(XEntity, ButtonEntity):
     value = None
 
+    def __init__(self, ewelink: XRegistry, device: dict):
+        XEntity.__init__(self, ewelink, device)
+
+        if self.params == "reboot":
+            self._attr_device_class = ButtonDeviceClass.RESTART
+            self._attr_entity_category = EntityCategory.CONFIG
+
     async def async_press(self):
         await self.ewelink.send(self.device, {self.param: self.value})
+
+
+class XT5Effect(XEntity, ButtonEntity):
+    uid = "effect"
+
+    async def async_press(self):
+        if pre := self.device["params"].get("preEffects"):
+            await self.ewelink.send(self.device, {"preEffects": pre})

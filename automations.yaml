@@ -1,64 +1,103 @@
 - id: '1767835761462'
-  alias: Basement Prusa Enclosure Light Control
+  alias: Basement prusa enclosure light control
   description: ''
   triggers:
-    - trigger: state
-      entity_id:
-        - sensor.prusa_mk4
-    - trigger: state
-      entity_id:
-        - input_select.prusa_enclosure_light
+  - trigger: state
+    entity_id:
+    - sensor.prusa_mk4
+    - input_select.prusa_enclosure_light
   conditions: []
   actions:
-    - choose:
-        - conditions:
-            - condition: state
-              entity_id: input_select.prusa_enclosure_light
-              state:
-                - 'Off'
-          sequence:
-            - action: switch.turn_off
-              metadata: {}
-              data: {}
-              target:
-                entity_id: switch.sonoff_100267bc56
-        - conditions:
-            - condition: state
-              entity_id: input_select.prusa_enclosure_light
-              state:
-                - 'On'
-          sequence:
-            - action: switch.turn_on
-              metadata: {}
-              target:
-                entity_id: switch.sonoff_100267bc56
-              data: {}
-        - conditions:
-            - condition: state
-              entity_id: input_select.prusa_enclosure_light
-              state:
-                - Auto
-          sequence:
-            - if:
-                - condition: state
-                  entity_id: sensor.prusa_mk4
-                  state:
-                    - attention
-                    - busy
-                    - error
-                    - paused
-                    - printing
-              then:
-                - action: switch.turn_on
-                  metadata: {}
-                  target:
-                    entity_id: switch.sonoff_100267bc56
-                  data: {}
-              else:
-                - action: switch.turn_off
-                  metadata: {}
-                  target:
-                    entity_id: switch.sonoff_100267bc56
-                  data: {}
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_select.prusa_enclosure_light
+        state:
+        - 'Off'
+      sequence:
+      - action: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_100267bc56
+    - conditions:
+      - condition: state
+        entity_id: input_select.prusa_enclosure_light
+        state:
+        - 'On'
+      sequence:
+      - action: switch.turn_on
+        metadata: {}
+        target:
+          entity_id: switch.sonoff_100267bc56
+        data: {}
+    - conditions:
+      - condition: state
+        entity_id: input_select.prusa_enclosure_light
+        state:
+        - Auto
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: sensor.prusa_mk4
+          state:
+          - unavailable
+      sequence:
+      - if:
+        - condition: state
+          entity_id: sensor.prusa_mk4
+          state:
+          - attention
+          - busy
+          - error
+          - paused
+          - printing
+        then:
+        - action: switch.turn_on
+          metadata: {}
+          target:
+            entity_id: switch.sonoff_100267bc56
+          data: {}
+        else:
+        - action: switch.turn_off
+          metadata: {}
+          target:
+            entity_id: switch.sonoff_100267bc56
+          data: {}
   mode: queued
   max: 10
+- id: '1772434502347'
+  alias: Flash office light while internet is out
+  description: ''
+  triggers:
+  - type: not_connected
+    device_id: 52c34361438b73331075e7d84429606b
+    entity_id: 2d2b7ba12dc08a4b48761e97dead3291
+    domain: binary_sensor
+    trigger: device
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 15
+  conditions: []
+  actions:
+  - repeat:
+      until:
+      - type: is_connected
+        condition: device
+        device_id: 52c34361438b73331075e7d84429606b
+        entity_id: 2d2b7ba12dc08a4b48761e97dead3291
+        domain: binary_sensor
+      sequence:
+      - action: light.toggle
+        metadata: {}
+        data:
+          flash: long
+        target:
+          entity_id: light.computer_room
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+  mode: single
